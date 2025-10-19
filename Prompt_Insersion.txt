@@ -1,0 +1,34 @@
+Tu es un assistant spécialisé en génération de données réalistes pour une base de données SQL.
+Je souhaite que tu génères automatiquement des instructions INSERT INTO pour remplir les tables suivantes :
+•	AGENCE (Nom_Agence, Pays_d_origine, Ville_Direction) : 30 enregistrements représentant des agences françaises réparties dans différentes grandes villes (Paris, Lyon, Marseille, Toulouse, Lille, etc.).
+Chaque agence possède un nom unique, un pays d’origine , et une ville de direction différente.
+
+•	Concessionnaire (C_Nom, Pays_D_origine, Type_Concessionaire, Ville_de_direction) : 30 enregistrements représentant de vrais concessionnaires automobiles (Peugeot, Renault, BMW, Toyota, etc.), avec des types variés : “multimarque”, “spécialisé”, “électrique”, etc. Les pays d’origine sont variés (France, Allemagne, Japon, États-Unis…).
+
+•	Maison (M_Nom_Marque, Date_de_creation) : 30 enregistrements correspondant à des marques automobiles réelles, avec des dates de création comprises entre 2016 et 2020 pour simuler des marques récentes ou filiales modernes.
+
+•	Adresse (Num_Adresse, N_rue, nom_rue, Code_postal) : 30 adresses françaises réalistes, avec n° de rue cohérents et codes postaux correspondant à de vraies villes (ex. 75015 Paris, 69003 Lyon...).
+
+•	Emploiyé (id_Emploiyé, Nom, prenom, Mail, age, Num_Adresse, Nom_Agence) : 30 employés, avec des noms internationaux, âges entre 25 et 50 ans, et adresses référencées dans la table Adresse. Chaque employé est rattaché à une agence (relation FOREIGN KEY (Nom_Agence)).
+
+•	Clients (C_ID, Nom, Prénom, date_naissance, Age, e_mail, Num_Adresse, id_Emploiyé) : 30 clients différents, avec des âges entre 25 et 50 ans, dates de naissance cohérentes, et emails professionnels. Chaque client est lié à une adresse et à un employé.
+
+
+•	Contrat (id_Contrat, type, Date_de_debut, date_de_fin, Statut_de_paiement, Etat_vehicule_au_depart, Etat_du_vehicule_au_retour, C_ID) :  30 contrats cohérents avec les clients, avec des types variés : “achat”, “location simple” , “location avec option d’achat”. Les dates sont postérieures à 2015 et les statuts de paiement réalistes (“payé”, “en attente”, “annulé”…).
+
+•	Voiture (Immatriculation, Etat, Couleur, Prix, Marque, Cheveaux, Type, Autonomie, id_Contrat, C_Nom) : 30 voitures associées à des contrats existants et des concessionnaires réels. Les modèles sont variés (citadine, SUV, électrique, etc.), avec prix et autonomie réalistes. Les puissances (Cheveaux) sont comprises entre 70 et 400 ch.
+
+•	Utilise (Nom_Agence, C_Nom) : 30 associations logiques entre agences et concessionnaires.
+Chaque ligne indique qu’une agence collabore avec un concessionnaire spécifique pour ses véhicules.
+
+•	Travaille_ (C_Nom, M_Nom_Marque) : 30 relations représentant des collaborations entre concessionnaires et maisons mères (marques).
+
+
+	Contraintes de génération :
+•	Toutes les valeurs doivent être cohérentes et réalistes (pas de doublons, emails corrects, marques existantes).
+•	Le format final doit être directement exécutable dans SQL, sous forme de blocs INSERT INTO ... VALUES (...).
+•	Le texte généré doit être enregistré dans un fichier nommé 3_insertion.sql.
+•	Respecter l’ordre logique des dépendances : d’abord les tables sans clés étrangères, ensuite celles avec FKs
+	Style attendu :
+•	Commentaires clairs séparant les sections (-- ==========================).
+•	Données variées, réalistes et équilibrées (nationalités, marques, villes, âges, prix, etc.).
