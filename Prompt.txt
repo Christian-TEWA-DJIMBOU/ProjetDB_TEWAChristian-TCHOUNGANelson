@@ -1,0 +1,23 @@
+Conçois une base de données complète pour une agence spécialisée dans la location de véhicules.
+L’objectif principal du projet est de permettre la gestion centralisée et automatisée de toutes les opérations liées à la location de véhicules, en assurant la traçabilité des clients, des véhicules, des contrats de location, des paiements, des employés, et des catégories de véhicules.
+Le système doit répondre aux besoins opérationnels, commerciaux et administratifs de l’agence, tout en garantissant la cohérence, la sécurité et la fiabilité des données.
+
+Fournis :
+
+1.	Recueillir et formaliser les règles métier qui structurent le fonctionnement de l’agence, 
+	en tenant compte des processus de location, de gestion des clients, de suivi des véhicules, de gestion des employés,
+	 de facturation et de paiement.
+
+2.	Établir un dictionnaire de données exhaustif, listant toutes les tables nécessaires, leurs attributs,
+	 les types de données associés, les tailles, ainsi que les clés primaires et étrangères. Ce dictionnaire
+	 doit permettre de comprendre la nature et le rôle de chaque donnée
+
+3.	Et un modèle conceptuel de données (MCD) conforme à la 3FN.
+
+Les contraintes à respecter :
+•	Un client peut louer plusieurs véhicules, mais un contrat de location ne concerne qu’un seul véhicule.
+•	Un véhicule peut être loué plusieurs fois à des dates différentes.
+•	Chaque location est gérée par un employé.
+•	Chaque véhicule appartient à une catégorie (citadine, SUV, utilitaire, etc.).
+•	La facture est émise pour chaque contrat de location.
+       Fournis ta réponse sous forme claire et structurée. »
