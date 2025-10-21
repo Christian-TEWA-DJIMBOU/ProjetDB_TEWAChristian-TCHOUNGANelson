@@ -99,62 +99,75 @@ order by annee
                                                                                        
                                   
 -- 1) Quels véhicules n’ont jamais été associés à un contrat actif ou passé ?
-SELECT v.id_vehicule, v.marque, v.modele
-FROM vehicule v
-LEFT JOIN contrat c ON v.id_vehicule = c.id_vehicule
-WHERE c.id_vehicule IS NULL;
+SELECT v.v_id, v.v_marque, v.v_type
+FROM voiture v
+LEFT JOIN contrat c ON v.co_id = c.co_id
+WHERE c.co_id IS NULL;
+
 
 -- 2) Top 5 véhicules les plus utilisés par type ? 
-SELECT v.type, v.id_vehicule, COUNT(c.id_contrat) AS nb_utilisations
-FROM vehicule v
-JOIN contrat c ON v.id_vehicule = c.id_vehicule
-GROUP BY v.type, v.id_vehicule
+SELECT v.v_type, v.v_id, COUNT(c.co_id) AS nb_utilisations
+FROM voiture v
+JOIN contrat c ON v.co_id = c.co_id
+GROUP BY v.v_type, v.v_id
 ORDER BY nb_utilisations DESC
 LIMIT 5;
-        
+
 -- 3) Liste les concessions ayant des véhicules stockés depuis plus d’un an sans contrat. 
-SELECT DISTINCT con.id_concession, con.nom_concession
-FROM concession con
-JOIN vehicule v ON con.id_concession = v.id_concession
-LEFT JOIN contrat c ON v.id_vehicule = c.id_vehicule
-WHERE c.id_contrat IS NULL
-  AND v.date_arrivee BETWEEN '2015-01-01' AND '2024-10-19';
-        
+SELECT DISTINCT con.c_nom, con.c_ville, con.c_pays
+FROM conces con
+JOIN voiture v ON con.c_nom = v.c_nom
+LEFT JOIN contrat c ON v.co_id = c.co_id
+WHERE c.co_id IS NULL;
+
+
 -- 4) Quels modèles sont présents dans plusieurs concessions ?
-SELECT v.modele, COUNT(DISTINCT v.id_concession) AS nb_concessions
-FROM vehicule v
-GROUP BY v.modele
-HAVING COUNT(DISTINCT v.id_concession) > 1;
-         
--- 5) Quels clients ont loué au moins un véhicule de chaque modèle SUV ? 
-SELECT c.id_client, c.nom
-FROM client c
-JOIN contrat ct ON c.id_client = ct.id_client
-JOIN vehicule v ON ct.id_vehicule = v.id_vehicule
-WHERE v.type = 'SUV'
-GROUP BY c.id_client, c.nom
-HAVING COUNT(DISTINCT v.modele) = (
-    SELECT COUNT(DISTINCT v2.modele)
-    FROM vehicule v2
-    WHERE v2.type = 'SUV'
-);
+SELECT v.v_marque, COUNT(DISTINCT v.c_nom) AS nb_concessions
+FROM voiture v
+GROUP BY v.v_marque
+HAVING COUNT(DISTINCT v.c_nom) > 1;
 
          
--- 6) Affiche chaque véhicule et la date de sa dernière intervention (NULL si jamais entretenu)
- SELECT v.id_vehicule, v.marque, v.modele, MAX(i.date_intervention) AS derniere_intervention
-FROM vehicule v
-LEFT JOIN intervention i ON v.id_vehicule = i.id_vehicule
-GROUP BY v.id_vehicule, v.marque, v.modele;
+-- 5) Quels clients ont loué au moins un véhicule de chaque modèle SUV ? 
+SELECT cl.cl_id, cl.cl_nom
+FROM clients cl
+JOIN contrat ct ON cl.cl_id = ct.cl_id
+JOIN voiture v ON ct.co_id = v.co_id
+WHERE v.v_type = 'SUV'
+GROUP BY cl.cl_id, cl.cl_nom
+HAVING COUNT(DISTINCT v.v_marque) = (
+    SELECT COUNT(DISTINCT v2.v_marque)
+    FROM voiture v2
+    WHERE v2.v_type = 'SUV'
+);
+
+
+         
+-- 6) Véhicules ayant eu un contrat (activité) plus récente qu’une certaine moyenne
+SELECT 
+    v.v_id,
+    v.v_marque,
+    v.v_type,
+    MAX(c.co_date_fin) AS derniere_activite
+FROM voiture v
+LEFT JOIN contrat c ON v.co_id = c.co_id
+GROUP BY v.v_id, v.v_marque, v.v_type
+HAVING derniere_activite > (
+    SELECT AVG(co_date_fin)
+    FROM contrat
+);
+
      
      
 -- 7) Quels véhicules ont un prix supérieur à tous les véhicules de type citadine ? 
-SELECT v.id_vehicule, v.modele, v.prix_location
-FROM vehicule v
-WHERE v.prix_location > ALL (
-    SELECT v2.prix_location
-    FROM vehicule v2
-    WHERE v2.type = 'citadine'
+SELECT v.v_id, v.v_marque, v.v_prix
+FROM voiture v
+WHERE v.v_prix > ALL (
+    SELECT v2.v_prix
+    FROM voiture v2
+    WHERE v2.v_type = 'citadine'
 );
+
 
 -- 8) Quelles agences n’ont aucun véhicule ayant été entretenu depuis 2023 ? 
 SELECT a.id_agence, a.nom_agence
@@ -169,22 +182,23 @@ WHERE NOT EXISTS (
            
 
 -- 9) Véhicules moins chers que certains SUV 
-SELECT v.id_vehicule, v.modele, v.prix_location
-FROM vehicule v
-WHERE v.prix_location < ANY (
-    SELECT v2.prix_location
-    FROM vehicule v2
-    WHERE v2.type = 'SUV'
+SELECT v.v_id, v.v_marque, v.v_prix
+FROM voiture v
+WHERE v.v_prix < ANY (
+    SELECT v2.v_prix
+    FROM voiture v2
+    WHERE v2.v_type = 'SUV'
 );
 
+
 -- 10) Identifier les clients qui n’ont pas eu de contrat actif depuis plus d’un an.
-SELECT c.id_client, c.nom
-FROM client c
+SELECT cl.cl_id, cl.cl_nom
+FROM clients cl
 WHERE NOT EXISTS (
     SELECT 1
     FROM contrat ct
-    WHERE ct.id_client = c.id_client
-      AND ct.date_debut >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    WHERE ct.cl_id = cl.cl_id
+      AND ct.co_date_debut >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
 );
 
            

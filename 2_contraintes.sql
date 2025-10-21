@@ -11,7 +11,7 @@ ALTER TABLE clients
   ALTER TABLE clients
   ADD constraint pk_cl PRIMARY KEY (cl_id);
   
-alter table clients Add permis varchar(50) not null;
+ALTER TABLE clients ADD permis VARCHAR(50) not null;
 
 alter table clients 
 add constraint cl_permis check (permis = "oui");
